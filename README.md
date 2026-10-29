@@ -8,15 +8,23 @@
 
 ## 畫面展示
 
-<img width="700" alt="畫面一" src="https://github.com/user-attachments/assets/c1e09601-d8ee-4573-99ed-558f85ff2227" />
+### 客人訂餐頁
 
-<img width="700" alt="畫面二" src="https://github.com/user-attachments/assets/423ca9ce-e7e2-46a6-8468-7ff5152596dd" />
+<img width="720" alt="客人訂餐頁與下單完成畫面" src="https://github.com/user-attachments/assets/c1e09601-d8ee-4573-99ed-558f85ff2227" />
 
-<img width="700" alt="畫面三" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
+### 店家後台
 
-<img width="280" alt="手機版一" src="https://github.com/user-attachments/assets/7e6e1b46-3db6-42a8-bb06-582965a710c6" />
+<img width="720" alt="店家後台訂單列表" src="https://github.com/user-attachments/assets/423ca9ce-e7e2-46a6-8468-7ff5152596dd" />
 
-<img width="280" alt="手機版二" src="https://github.com/user-attachments/assets/b6b924a4-9a67-4c3a-8c13-0e540fab548e" />
+### n8n 自動化流程
+
+<img width="720" alt="n8n 流程圖" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
+
+### 通知結果
+
+| LINE 通知 | Gmail 通知 |
+|---|---|
+| <img width="320" alt="LINE 收到的訂單通知" src="https://github.com/user-attachments/assets/7e6e1b46-3db6-42a8-bb06-582965a710c6" /> | <img width="320" alt="Gmail 收到的訂單通知" src="https://github.com/user-attachments/assets/b6b924a4-9a67-4c3a-8c13-0e540fab548e" /> |
 
 ## 系統架構
 
