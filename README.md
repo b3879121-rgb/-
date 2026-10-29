@@ -1,4 +1,4 @@
-# 楓葉小吃線上訂餐系統
+<img width="1011" height="745" alt="gr431" src="https://github.com/user-attachments/assets/78719a28-93cf-41df-a4e4-e124f7e4de0c" /># 楓葉小吃線上訂餐系統
 
 [English](README.en.md)｜**繁體中文**
 
@@ -7,10 +7,11 @@
 **展示版（純前端模擬，不連資料庫與 n8n）：** https://你的帳號.github.io/order-system/
 
 <!--
-放上截圖或操作影片後，取消這段註解：
-![訂餐頁](docs/screenshots/order.png)
-![店家後台](docs/screenshots/admin.png)
-![n8n 流程](docs/screenshots/n8n.png)
+<img width="1402" height="897" alt="F3E" src="https://github.com/user-attachments/assets/c1e09601-d8ee-4573-99ed-558f85ff2227" />
+<img width="1187" height="906" alt="螢幕擷取畫面 2026-10-26 223452" src="https://github.com/user-attachments/assets/423ca9ce-e7e2-46a6-8468-7ff5152596dd" />
+<img width="1011" height="745" alt="gr431" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
+<img width="869" height="1136" alt="S__77357063_0" src="https://github.com/user-attachments/assets/7e6e1b46-3db6-42a8-bb06-582965a710c6" />
+<img width="869" height="1212" alt="S__77357064_0" src="https://github.com/user-attachments/assets/b6b924a4-9a67-4c3a-8c13-0e540fab548e" />
 -->
 
 ## 系統架構
