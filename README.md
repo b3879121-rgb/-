@@ -15,6 +15,7 @@
 <img width="700" alt="畫面三" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
 
 <img width="280" alt="手機版一" src="https://github.com/user-attachments/assets/7e6e1b46-3db6-42a8-bb06-582965a710c6" />
+
 <img width="280" alt="手機版二" src="https://github.com/user-attachments/assets/b6b924a4-9a67-4c3a-8c13-0e540fab548e" />
 
 ## 系統架構
