@@ -6,8 +6,16 @@
 
 **展示版（純前端模擬，不連資料庫與 n8n）：** https://你的帳號.github.io/order-system/
 
-<!--
--->
+## 畫面展示
+
+<img width="700" alt="畫面一" src="https://github.com/user-attachments/assets/c1e09601-d8ee-4573-99ed-558f85ff2227" />
+
+<img width="700" alt="畫面二" src="https://github.com/user-attachments/assets/423ca9ce-e7e2-46a6-8468-7ff5152596dd" />
+
+<img width="700" alt="畫面三" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
+
+<img width="280" alt="手機版一" src="https://github.com/user-attachments/assets/7e6e1b46-3db6-42a8-bb06-582965a710c6" />
+<img width="280" alt="手機版二" src="https://github.com/user-attachments/assets/b6b924a4-9a67-4c3a-8c13-0e540fab548e" />
 
 ## 系統架構
 
