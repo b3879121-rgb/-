@@ -1,73 +1,501 @@
-<!doctype html>
+```html
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>楓葉小吃｜線上訂餐</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>晨光咖啡 Morning Light Café</title>
+
+  <!-- Bootstrap 5 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Serif+TC:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --brown: #4A3025;
+      --cream: #EDE7DC;
+      --accent: #B9684A;
+      --gold: #B08A57;
+      --text: #40352F;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 75px;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--cream);
+      color: var(--text);
+      font-family: "Noto Serif TC", serif;
+    }
+
+    h1, h2, h3, .brand, .english {
+      font-family: "Cormorant Garamond", "Noto Serif TC", serif;
+    }
+
+    /* 導覽列 */
+    .navbar {
+      background-color: rgba(237, 231, 220, 0.96);
+      border-bottom: 1px solid rgba(74, 48, 37, 0.15);
+    }
+
+    .brand {
+      color: var(--brown);
+      font-size: 1.7rem;
+      font-weight: 700;
+      text-decoration: none;
+      line-height: 1;
+    }
+
+    .brand small {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.9rem;
+      letter-spacing: 1.5px;
+    }
+
+    .nav-link {
+      color: var(--brown) !important;
+      margin-left: 18px;
+      font-size: 0.95rem;
+    }
+
+    .nav-link:hover {
+      color: var(--accent) !important;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      background:
+        linear-gradient(rgba(50, 32, 24, 0.38), rgba(50, 32, 24, 0.38)),
+        url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1800&q=85")
+        center / cover no-repeat;
+    }
+
+    .hero-content {
+      color: #fff;
+      max-width: 700px;
+    }
+
+    .hero h1 {
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      margin-bottom: 0;
+      letter-spacing: 2px;
+    }
+
+    .hero .subtitle {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      letter-spacing: 4px;
+      margin-bottom: 25px;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      line-height: 2;
+    }
+
+    .btn-vintage {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 11px 28px;
+      border-radius: 0;
+      margin-right: 8px;
+    }
+
+    .btn-vintage:hover {
+      background-color: var(--brown);
+      color: #fff;
+    }
+
+    .btn-outline-vintage {
+      color: #fff;
+      border: 1px solid #fff;
+      padding: 10px 28px;
+      border-radius: 0;
+    }
+
+    .btn-outline-vintage:hover {
+      background-color: #fff;
+      color: var(--brown);
+    }
+
+    /* 通用區塊 */
+    section {
+      padding: 100px 0;
+    }
+
+    .section-title {
+      color: var(--brown);
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: var(--accent);
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: 3px;
+      font-size: 1.2rem;
+      margin-bottom: 45px;
+    }
+
+    .divider {
+      width: 55px;
+      height: 1px;
+      background-color: var(--gold);
+      margin: 20px 0 30px;
+    }
+
+    /* 關於我們 */
+    .about-image {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      filter: sepia(12%);
+    }
+
+    .about-text {
+      line-height: 2.1;
+      font-size: 1rem;
+    }
+
+    /* 菜單 */
+    #menu {
+      background-color: #E5DDD0;
+    }
+
+    .menu-card {
+      background-color: #F4EFE6;
+      border: 1px solid rgba(74, 48, 37, 0.15);
+      padding: 35px 25px;
+      height: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .menu-icon {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .menu-card h3 {
+      color: var(--brown);
+      font-size: 1.7rem;
+    }
+
+    .price {
+      color: var(--accent);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* 環境照片 */
+    .gallery img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      filter: sepia(10%);
+    }
+
+    /* 聯絡 */
+    #contact {
+      background-color: var(--brown);
+      color: #F4EFE6;
+    }
+
+    #contact .section-title {
+      color: #F4EFE6;
+    }
+
+    #contact .section-subtitle {
+      color: #D9A98D;
+    }
+
+    .contact-info {
+      font-size: 1.05rem;
+      line-height: 2.2;
+    }
+
+    .contact-btn {
+      border: 1px solid #EDE7DC;
+      color: #EDE7DC;
+      padding: 11px 28px;
+      text-decoration: none;
+      display: inline-block;
+      margin: 5px;
+    }
+
+    .contact-btn:hover {
+      background-color: #EDE7DC;
+      color: var(--brown);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #38251D;
+      color: #CFC3B7;
+      text-align: center;
+      padding: 25px 15px;
+      font-size: 0.85rem;
+    }
+
+    /* 手機版 */
+    @media (max-width: 767px) {
+      .navbar-brand {
+        margin-left: 5px;
+      }
+
+      .nav-link {
+        margin-left: 0;
+        padding: 10px 5px !important;
+      }
+
+      .hero {
+        min-height: 85vh;
+      }
+
+      .hero-content {
+        padding: 25px;
+      }
+
+      .hero h1 {
+        font-size: 4rem;
+      }
+
+      section {
+        padding: 70px 0;
+      }
+
+      .section-title {
+        font-size: 2.4rem;
+      }
+
+      .about-image {
+        height: 350px;
+        margin-bottom: 35px;
+      }
+
+      .gallery img {
+        height: 240px;
+      }
+
+      .btn-vintage,
+      .btn-outline-vintage {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="awning-wrap"><div class="awning" aria-hidden="true"></div></div>
-<figure class="hero">
-  <img src="{{ hero }}" alt="下雨夜晚的台灣夜市，人們在攤位前吃飯">
-  <div class="sign">楓葉小吃</div>
-</figure>
-<p class="tagline">選好餐點，填寫資料，送出後店裡就會收到訂單。</p>
 
-<main>
-  <section aria-labelledby="menu-title">
-    <h2 id="menu-title">今日菜單</h2>
-    <div id="menu"></div>
-  </section>
+<!-- 導覽列 -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
 
-  <aside class="slip" id="slip" aria-labelledby="slip-title">
-    <div id="order-view">
-      <h2 id="slip-title">我的訂單</h2>
-      <ul class="lines" id="lines"></ul>
-      <div class="total"><span>合計</span><span id="total">$0</span></div>
-      <form id="form" novalidate>
-        <label for="name">姓名</label>
-        <input type="text" id="name" name="name" autocomplete="name" required>
-        <label for="phone">電話</label>
-        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" required>
-        <fieldset>
-          <legend>取餐方式</legend>
-          <div class="choice">
-            <label><input type="radio" name="fulfillment" value="pickup" checked> 到店自取</label>
-            <label><input type="radio" name="fulfillment" value="delivery"> 外送</label>
-          </div>
-        </fieldset>
-        <div id="address-wrap" hidden>
-          <label for="address">外送地址</label>
-          <input type="text" id="address" name="address" autocomplete="street-address">
+    <a class="brand" href="#home">
+      晨光咖啡
+      <small>Morning Light Café</small>
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNav"
+      aria-controls="mainNav"
+      aria-expanded="false"
+      aria-label="開啟選單"
+    >
+      ☰
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#home">首頁</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#about">關於我們</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#menu">菜單</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact">聯絡我們</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Hero -->
+<header id="home" class="hero">
+  <div class="container">
+    <div class="hero-content">
+
+      <div class="subtitle">MORNING LIGHT CAFÉ</div>
+
+      <h1>晨光咖啡</h1>
+
+      <div class="divider"></div>
+
+      <p>
+        讓每一天，都從一杯好咖啡開始。<br>
+        新鮮烘焙咖啡豆 × 舒適閱讀空間
+      </p>
+
+      <div class="mt-4">
+        <a href="#menu" class="btn btn-vintage">
+          查看菜單
+        </a>
+
+        <a href="#contact" class="btn btn-outline-vintage">
+          聯絡我們
+        </a>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- 關於我們 -->
+<section id="about">
+  <div class="container">
+
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-6">
+        <img
+          class="about-image"
+          src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1000&q=80"
+          alt="晨光咖啡店內環境"
+        >
+      </div>
+
+      <div class="col-lg-6">
+
+        <div class="section-subtitle">
+          OUR STORY
         </div>
-        <label for="note">備註（選填）</label>
-        <textarea id="note" name="note" maxlength="200"></textarea>
-        <button class="submit" type="submit" id="submit">送出訂單</button>
-        <p class="msg" id="msg" role="status" aria-live="polite"></p>
-      </form>
-    </div>
-    <div class="done" id="done-view" hidden>
-      <h2>訂單已送出</h2>
-      <div class="id" id="done-id"></div>
-      <p>合計 <strong id="done-total"></strong> 元。店家確認後會聯絡你。</p>
-      <button type="button" id="again">再訂一筆</button>
-    </div>
-  </aside>
-</main>
 
-<div class="bar" id="bar">
-  <span id="bar-sum">尚未選餐</span>
-  <button type="button" id="bar-go">看訂單</button>
-</div>
+        <h2 class="section-title">
+          關於晨光咖啡
+        </h2>
 
-<footer>
-  照片來自 <a href="https://unsplash.com/?utm_source=maple_order&utm_medium=referral">Unsplash</a>：
-  K X I T H V I S U A L S、Xavier Chng、Trista Le、Jonathan Lim、Daily Food Shot、Chinh Le Duc、Uehara Photography、Snappr、Moonyang Lin。
-</footer>
-<script src="{{ url_for('static', filename='app.js') }}"></script>
-</body>
-</html>
+        <div class="divider"></div>
+
+        <p class="about-text">
+          晨光咖啡成立於 2020 年，堅持使用新鮮烘焙的咖啡豆，
+          細心沖煮每一杯咖啡。
+        </p>
+
+        <p class="about-text">
+          我們希望提供的不只是一杯咖啡，
+          更是一個舒適、自在的閱讀與休憩空間。
+          在忙碌的日常裡，留一點時間給自己，
+          享受屬於自己的咖啡時光。
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- 菜單 -->
+<section id="menu">
+  <div class="container">
+
+    <div class="text-center">
+      <div class="section-subtitle">COFFEE MENU</div>
+      <h2 class="section-title">咖啡與菜單</h2>
+    </div>
+
+    <div class="row g-4 mt-3">
+
+      <div class="col-md-4">
+        <div class="menu-card text-center">
+          <div class="menu-icon">☕</div>
+          <h3>美式咖啡</h3>
+          <p class="mt-3">
+            簡單純粹的咖啡風味，適合日常享用。
+          </p>
+          <div class="price mt-3">NT$90</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="menu-card text-center">
+          <div class="menu-icon">🥛</div>
+          <h3>拿鐵</h3>
+          <p class="mt-3">
+            濃郁咖啡與柔滑奶香的溫暖搭配。
+          </p>
+          <div class="price mt-3">NT$110</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="menu-card text-center">
+          <div class="menu-icon">🫘</div>
+          <h3>手沖咖啡</h3>
+          <p class="mt-3">
+            細緻呈現咖啡豆本身的香氣與風味。
+          </p>
+          <div class="price mt-3">NT$150 起</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- 店內環境 -->
+<section>
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <div class="section-subtitle">FIND YOUR MOMENT</div>
+      <h2 class="section-title">在晨光裡，找到自己的時光</h2>
+    </div>
+
+    <div class="row g-3 gallery">
+
+      <div class="col-md-4">
+        <img
+          src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=900&q=80"
+          alt="咖啡店環境"
+        >
+      </div>
+
+      <div class="col-md-4">
+        <img
+          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80"
+          alt="閱讀空間"
+        >
