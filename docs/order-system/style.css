@@ -1,0 +1,109 @@
+:root {
+  --tile: #cfe3d4; --paper: #fbfbf6; --ink: #1b1f2a; --muted: #4f5b57;
+  --red: #c2262e; --blue: #1d4f9c; --yolk: #f2b632; --line: #9db8a4;
+  --hand: "LXGW WenKai TC", "Kaiti TC", "DFKai-SB", serif;
+  --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--tile); color: var(--ink); font: 400 1rem/1.6 var(--sans); }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+h2 { font: 700 1.6rem/1.2 var(--hand); margin: 0 0 .75rem; }
+
+/* 帆布遮雨棚 */
+.awning-wrap { filter: drop-shadow(0 3px 0 rgba(27,31,42,.22)); }
+.awning {
+  height: 52px;
+  background: repeating-linear-gradient(90deg, var(--red) 0 48px, #fff 48px 96px, var(--blue) 96px 144px, #fff 144px 192px);
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% 28px no-repeat, radial-gradient(circle 24px at 24px 0, #000 98%, #0000) bottom / 48px 24px repeat-x;
+          mask: linear-gradient(#000 0 0) top / 100% 28px no-repeat, radial-gradient(circle 24px at 24px 0, #000 98%, #0000) bottom / 48px 24px repeat-x;
+}
+
+/* 店面橫幅與招牌 */
+.hero { max-width: 1080px; margin: 1.5rem auto 0; padding: 0 1.25rem; position: relative; }
+.hero img { display: block; width: 100%; height: clamp(180px, 30vw, 320px); object-fit: cover; border: 4px solid var(--paper); outline: 2px solid var(--ink); }
+.sign {
+  position: absolute; left: 2.25rem; bottom: -1.25rem; transform: rotate(-1.5deg);
+  background: var(--red); color: #fff; padding: .35rem 1.4rem .45rem;
+  border: 3px solid #fff; outline: 3px solid var(--red);
+  font: 700 clamp(2rem, 6vw, 3.2rem)/1.1 var(--hand); letter-spacing: .18em;
+}
+.tagline { max-width: 1080px; margin: 2rem auto 0; padding: 0 1.25rem; color: var(--muted); }
+
+main { max-width: 1080px; margin: 0 auto; padding: 1rem 1.25rem 5rem; display: grid; grid-template-columns: 1fr 360px; gap: 2rem; align-items: start; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+/* 菜單 */
+.cat { font: 700 1.25rem var(--hand); margin: 1.25rem 0 .5rem; color: var(--blue); }
+.cat:first-child { margin-top: 0; }
+.row { display: flex; align-items: center; gap: .9rem; padding: .75rem; margin-bottom: .75rem; background: var(--paper); border: 2px solid var(--ink); }
+.row img { width: 88px; height: 88px; object-fit: cover; flex: none; border: 2px solid var(--ink); background: var(--line); }
+.row .info { flex: 1; min-width: 0; }
+.row .name { font: 700 1.35rem/1.3 var(--hand); }
+.row .note { font-size: .875rem; color: var(--muted); }
+.price { background: var(--yolk); border: 2px solid var(--ink); padding: .05rem .6rem; font: 700 1.25rem var(--hand); white-space: nowrap; }
+.stepper { display: flex; align-items: center; gap: .25rem; }
+.stepper button { width: 2.5rem; height: 2.5rem; border-radius: 50%; border: 2px solid var(--blue); background: #fff; color: var(--blue); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.stepper button:hover:not(:disabled) { background: var(--blue); color: #fff; }
+.stepper button:disabled { opacity: .3; cursor: default; }
+.stepper output { min-width: 1.75rem; text-align: center; font-weight: 700; }
+@media (max-width: 560px) {
+  .row { flex-wrap: wrap; }
+  .row img { width: 72px; height: 72px; }
+  .row .price { order: 3; }
+  .stepper { margin-left: auto; }
+}
+
+/* 訂單單據 */
+.slip { background: var(--paper); border: 2px solid var(--ink); padding: 1.25rem; position: sticky; top: 1rem; box-shadow: 6px 6px 0 var(--red); }
+@media (max-width: 860px) { .slip { position: static; } }
+.lines { list-style: none; margin: 0 0 .75rem; padding: 0; min-height: 2.5rem; }
+.lines li { display: flex; justify-content: space-between; gap: .5rem; padding: .15rem 0; }
+.lines .empty { color: var(--muted); }
+.total { display: flex; justify-content: space-between; align-items: baseline; border-top: 2px dashed var(--ink); padding-top: .6rem; margin-bottom: 1rem; font: 700 1.5rem var(--hand); }
+label { display: block; font-weight: 500; margin: .8rem 0 .25rem; }
+input[type=text], input[type=tel], textarea { width: 100%; padding: .6rem .7rem; font: inherit; color: inherit; border: 1.5px solid var(--ink); border-radius: 2px; background: #fff; }
+textarea { resize: vertical; min-height: 4rem; }
+fieldset { border: 0; padding: 0; margin: .8rem 0 0; }
+legend { font-weight: 500; padding: 0; margin-bottom: .25rem; }
+.choice { display: flex; gap: 1.25rem; }
+.choice label { display: flex; align-items: center; gap: .4rem; margin: 0; font-weight: 400; }
+.submit { width: 100%; margin-top: 1.25rem; padding: .85rem; border: 0; cursor: pointer; background: var(--red); color: #fff; font: 700 1.3rem var(--hand); letter-spacing: .1em; }
+.submit:hover:not(:disabled) { background: #a21d24; }
+.submit:disabled { opacity: .5; cursor: default; }
+.msg { margin: .75rem 0 0; min-height: 1.5rem; font-weight: 500; }
+.msg.error { color: var(--red); }
+.done { text-align: center; padding: 1rem 0; }
+.done .id { font: 700 2.4rem var(--hand); color: var(--blue); }
+.done button { margin-top: 1rem; padding: .6rem 1.25rem; border: 2px solid var(--ink); background: #fff; font: inherit; font-weight: 500; cursor: pointer; }
+
+/* 手機底部合計列 */
+.bar { display: none; }
+@media (max-width: 860px) {
+  .bar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem 1.25rem calc(.7rem + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: #fff; font: 700 1.15rem var(--hand); }
+  .bar button { padding: .5rem 1.1rem; border: 0; background: var(--yolk); color: var(--ink); font: 700 1.05rem var(--hand); cursor: pointer; }
+}
+footer { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem 5rem; font-size: .8rem; color: var(--muted); }
+footer a { color: inherit; }
+
+/* 店家後台 */
+.admin { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.admin h1 { font: 700 2rem var(--hand); margin: 0 0 1rem; }
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; }
+.filters button { padding: .45rem 1rem; border: 2px solid var(--ink); background: #fff; font: inherit; cursor: pointer; }
+.filters button.on { background: var(--ink); color: #fff; }
+.meta { color: var(--muted); margin: .75rem 0; }
+.order { background: var(--paper); border: 2px solid var(--ink); padding: 1rem; margin-bottom: 1rem; }
+.order.is-new { box-shadow: 6px 6px 0 var(--red); }
+.order header { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; justify-content: space-between; }
+.order .oid { font: 700 1.5rem var(--hand); color: var(--blue); }
+.order ul { margin: .5rem 0; padding-left: 1.2rem; }
+.order .info { color: var(--muted); }
+.order .foot { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; border-top: 2px dashed var(--ink); padding-top: .6rem; margin-top: .6rem; }
+.order .sum { font: 700 1.4rem var(--hand); }
+.order select { padding: .4rem .6rem; font: inherit; border: 2px solid var(--ink); background: #fff; }
+.badge { display: inline-block; padding: 0 .5rem; border: 2px solid var(--red); color: var(--red); font-size: .85rem; font-weight: 700; }
+
+/* 展示版提示列 */
+.demo { background: var(--ink); color: #fff; text-align: center; padding: .5rem 1rem; font-size: .9rem; }
+.demo a { color: var(--yolk); }
