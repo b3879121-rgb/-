@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>楓葉小吃｜訂單後台</title>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="awning-wrap"><div class="awning" aria-hidden="true"></div></div>
+<div class="admin">
+  <h1>訂單後台</h1>
+  <div class="filters" id="filters" role="group" aria-label="訂單狀態">
+    <button data-s="" class="on">全部</button>
+    <button data-s="new">新訂單</button>
+    <button data-s="preparing">製作中</button>
+    <button data-s="done">已完成</button>
+    <button data-s="cancelled">已取消</button>
+  </div>
+  <p class="meta" id="meta">載入中…</p>
+  <div id="orders"></div>
+</div>
+<script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>
