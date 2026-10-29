@@ -1,4 +1,4 @@
-<img width="1011" height="745" alt="gr431" src="https://github.com/user-attachments/assets/78719a28-93cf-41df-a4e4-e124f7e4de0c" /># 楓葉小吃線上訂餐系統
+# 楓葉小吃線上訂餐系統
 
 [English](README.en.md)｜**繁體中文**
 
