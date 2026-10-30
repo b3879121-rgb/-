@@ -4,7 +4,7 @@
 
 Customers order from a web page; each order is saved to MySQL and forwarded to n8n, which sends a Gmail notification, appends a Google Sheets row and pushes a LINE message to the shop. The shop also has an admin page to review orders and update their status.
 
-**Live demo (front-end only, no database or n8n):** https://b3879121-rgb.github.io/order-system/
+**Live demo (front-end only, no database or n8n):** https://b3879121-rgb.github.io/-/
 
 ## Screenshots
 

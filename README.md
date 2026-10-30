@@ -4,7 +4,7 @@
 
 客人在網頁選餐下單，訂單存進 MySQL，並透過 n8n 自動寄 Gmail、寫入 Google 試算表、傳 LINE 通知店家。店家另有後台可以查看訂單、更新製作狀態。
 
-**展示版（純前端模擬，不連資料庫與 n8n）：** https://b3879121-rgb.github.io/order-system/
+**展示版（純前端模擬，不連資料庫與 n8n）：** https://b3879121-rgb.github.io/-/
 
 ## 畫面展示
 
