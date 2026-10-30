@@ -30,7 +30,7 @@ Photo menu, quantity buttons and a live total; choose pickup/delivery and paymen
 
 ### n8n workflow
 
-<img width="720" alt="n8n workflow" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
+![n8n workflow](screenshots/n8n.png)
 
 ### Notifications
 

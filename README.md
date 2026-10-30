@@ -30,7 +30,7 @@
 
 ### n8n 自動化流程
 
-<img width="720" alt="n8n 流程圖" src="https://github.com/user-attachments/assets/56a58425-a70a-4c3a-87ca-a1019a884210" />
+![n8n 自動化流程](screenshots/n8n.png)
 
 ### 通知結果
 
