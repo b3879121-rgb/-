@@ -103,3 +103,41 @@ footer a { color: inherit; }
 .order .sum { font: 700 1.4rem var(--hand); }
 .order select { padding: .4rem .6rem; font: inherit; border: 2px solid var(--ink); background: #fff; }
 .badge { display: inline-block; padding: 0 .5rem; border: 2px solid var(--red); color: var(--red); font-size: .85rem; font-weight: 700; }
+
+/* 付款方式與提示 */
+.hint { font-size: .85rem; color: var(--muted); margin: .3rem 0 0; }
+
+/* 訂單確認視窗 */
+dialog { border: 2px solid var(--ink); background: var(--paper); color: var(--ink); padding: 1.25rem; width: min(440px, calc(100vw - 2rem)); box-shadow: 6px 6px 0 var(--red); }
+dialog::backdrop { background: rgba(27,31,42,.55); }
+.c-info { margin: 0 0 .75rem; display: grid; grid-template-columns: 5.5em 1fr; gap: .25rem .5rem; }
+.c-info dt { color: var(--muted); }
+.c-info dd { margin: 0; overflow-wrap: anywhere; }
+.c-actions { display: flex; gap: .75rem; }
+.c-actions button { flex: 1; padding: .8rem; border: 2px solid var(--ink); background: #fff; font: 700 1.1rem var(--hand); cursor: pointer; }
+.c-actions .submit { width: auto; margin: 0; border: 0; background: var(--red); color: #fff; }
+
+/* 後台：當日統計與操作按鈕 */
+.summary { background: var(--paper); border: 2px solid var(--ink); padding: 1rem; margin-bottom: 1.25rem; }
+.sum-head { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; }
+.sum-head h2 { margin: 0 auto 0 0; }
+.sum-head label { display: inline; margin: 0; }
+.sum-head input[type=date] { padding: .4rem .6rem; font: inherit; border: 2px solid var(--ink); background: #fff; }
+.export { padding: .5rem 1rem; border: 2px solid var(--ink); background: var(--yolk); font: 700 1rem var(--hand); cursor: pointer; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .6rem; margin: .8rem 0 .4rem; }
+.tile { border: 2px solid var(--ink); padding: .5rem .7rem; background: #fff; }
+.tile.main { background: var(--yolk); }
+.tile b { display: block; font: 700 1.5rem/1.2 var(--hand); }
+.tile span { font-size: .85rem; color: var(--muted); }
+.tile.main span { color: var(--ink); }
+.top { margin: .75rem 0 0; padding: 0; list-style: none; }
+.top li { display: flex; justify-content: space-between; gap: 1rem; padding: .2rem 0; border-bottom: 1px dashed var(--line); }
+.flash { min-height: 1.5rem; margin: 0 0 .5rem; font-weight: 700; color: var(--blue); }
+.acts { display: flex; flex-wrap: wrap; gap: .5rem; }
+.act { padding: .5rem 1rem; border: 2px solid var(--ink); background: #fff; font: 700 1rem var(--hand); cursor: pointer; }
+.act.go { background: var(--blue); color: #fff; border-color: var(--blue); }
+.act.no { color: var(--red); border-color: var(--red); }
+.badge.pay { border-color: var(--blue); color: var(--blue); }
+
+.demo { background: var(--ink); color: #fff; text-align: center; padding: .5rem 1rem; font-size: .9rem; }
+.demo a { color: var(--yolk); }

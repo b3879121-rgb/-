@@ -1,3 +1,4 @@
+import io
 import os
 import re
 import secrets
@@ -10,7 +11,7 @@ from functools import wraps
 import pymysql
 import requests
 from dotenv import load_dotenv
-from flask import Flask, Response, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request, send_file
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
@@ -74,12 +75,17 @@ def init_db():
             customer_name VARCHAR(50) NOT NULL,
             phone VARCHAR(12) NOT NULL,
             fulfillment ENUM('pickup','delivery') NOT NULL,
+            payment ENUM('cash','card') NOT NULL DEFAULT 'cash',
             address VARCHAR(200) NOT NULL DEFAULT '',
             note VARCHAR(200) NOT NULL DEFAULT '',
             total INT NOT NULL,
             status ENUM('new','preparing','done','cancelled') NOT NULL DEFAULT 'new',
             n8n_sent TINYINT(1) NOT NULL DEFAULT 0,
             created_at DATETIME NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""")
+        cur.execute("SHOW COLUMNS FROM orders LIKE 'payment'")
+        if not cur.fetchone():  # 舊版資料表補上付款方式欄位
+            cur.execute("ALTER TABLE orders ADD COLUMN payment "
+                        "ENUM('cash','card') NOT NULL DEFAULT 'cash' AFTER fulfillment")
         cur.execute("""CREATE TABLE IF NOT EXISTS order_items (
             id INT AUTO_INCREMENT PRIMARY KEY,
             order_id VARCHAR(10) NOT NULL,
@@ -98,10 +104,11 @@ def save_order(o):
     try:
         with c.cursor() as cur:
             cur.execute(
-                "INSERT INTO orders (order_id, customer_name, phone, fulfillment, address,"
-                " note, total, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+                "INSERT INTO orders (order_id, customer_name, phone, fulfillment, payment,"
+                " address, note, total, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                 (o["order_id"], o["customer"]["name"], o["customer"]["phone"], o["fulfillment"],
-                 o["address"], o["note"], o["total"], o["created_at"][:19].replace("T", " ")))
+                 o["payment"], o["address"], o["note"], o["total"],
+                 o["created_at"][:19].replace("T", " ")))
             cur.executemany(
                 "INSERT INTO order_items (order_id, item_id, item_name, price, qty, subtotal)"
                 " VALUES (%s,%s,%s,%s,%s,%s)",
@@ -162,6 +169,7 @@ def create_order():
     phone = re.sub(r"[\s-]", "", str(d.get("phone", "")))
     note = str(d.get("note", "")).strip()[:200]
     ful = d.get("fulfillment")
+    pay = d.get("payment")
     addr = str(d.get("address", "")).strip()[:200]
 
     if not name:
@@ -172,6 +180,8 @@ def create_order():
         return jsonify(error="請選擇取餐方式"), 400
     if ful == "delivery" and not addr:
         return jsonify(error="外送請填寫地址"), 400
+    if pay not in ("cash", "card"):
+        return jsonify(error="請選擇付款方式"), 400
 
     items, total = [], 0
     for row in d.get("items", []):
@@ -193,6 +203,7 @@ def create_order():
         "created_at": datetime.now(TW).isoformat(timespec="seconds"),
         "customer": {"name": name, "phone": phone},
         "fulfillment": ful,
+        "payment": pay,
         "address": addr if ful == "delivery" else "",
         "note": note,
         "items": items,
@@ -235,31 +246,158 @@ def admin():
     return render_template("admin.html")
 
 
+STATUS_TEXT = {"new": "新訂單", "preparing": "製作中", "done": "已完成", "cancelled": "已取消"}
+PAY_TEXT = {"cash": "現金", "card": "刷卡"}
+FUL_TEXT = {"pickup": "到店自取", "delivery": "外送"}
+
+
+def parse_date(value):
+    try:
+        return datetime.strptime(value or "", "%Y-%m-%d").date().isoformat()
+    except ValueError:
+        return datetime.now(TW).date().isoformat()
+
+
+def fetch_orders(cur, status, day):
+    """active = 進行中（新訂單＋製作中，不分日期）；其餘依日期查詢。"""
+    if status == "active":
+        cur.execute("SELECT * FROM orders WHERE status IN ('new','preparing') ORDER BY id ASC LIMIT 200")
+    elif status in STATUSES:
+        cur.execute("SELECT * FROM orders WHERE status=%s AND DATE(created_at)=%s "
+                    "ORDER BY id DESC LIMIT 500", (status, day))
+    else:
+        cur.execute("SELECT * FROM orders WHERE DATE(created_at)=%s ORDER BY id ASC", (day,))
+    orders = cur.fetchall()
+    if orders:
+        ids = [o["order_id"] for o in orders]
+        cur.execute("SELECT * FROM order_items WHERE order_id IN (%s)"
+                    % ",".join(["%s"] * len(ids)), ids)
+        by = {}
+        for it in cur.fetchall():
+            by.setdefault(it["order_id"], []).append(it)
+        for o in orders:
+            o["items"] = by.get(o["order_id"], [])
+    return orders
+
+
+def day_summary(cur, day):
+    """營業額只計算「已完成」的訂單。"""
+    cur.execute("""SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS revenue,
+        COALESCE(SUM(CASE WHEN payment='cash' THEN total ELSE 0 END),0) AS cash,
+        COALESCE(SUM(CASE WHEN payment='card' THEN total ELSE 0 END),0) AS card
+        FROM orders WHERE status='done' AND DATE(created_at)=%s""", (day,))
+    r = cur.fetchone()
+    cur.execute("SELECT COUNT(*) AS n FROM orders WHERE status='cancelled' AND DATE(created_at)=%s", (day,))
+    cancelled = cur.fetchone()["n"]
+    cur.execute("SELECT COUNT(*) AS n FROM orders WHERE status IN ('new','preparing')")
+    pending = cur.fetchone()["n"]
+    cur.execute("""SELECT i.item_name, SUM(i.qty) AS qty, SUM(i.subtotal) AS amount
+        FROM order_items i JOIN orders o ON o.order_id=i.order_id
+        WHERE o.status='done' AND DATE(o.created_at)=%s
+        GROUP BY i.item_id, i.item_name ORDER BY qty DESC""", (day,))
+    items = [{"name": x["item_name"], "qty": int(x["qty"]), "amount": int(x["amount"])}
+             for x in cur.fetchall()]
+    return {"date": day, "done": int(r["n"]), "revenue": int(r["revenue"]),
+            "cash": int(r["cash"]), "card": int(r["card"]),
+            "cancelled": int(cancelled), "pending": int(pending), "items": items}
+
+
+def safe(v):
+    """客人輸入的文字若以 = + - @ 開頭，Excel 會當成公式執行，先加單引號中和。"""
+    if isinstance(v, str) and v[:1] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + v
+    return v
+
+
+def build_xlsx(day, orders, s):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "當日摘要"
+    for row in [["日期", day], ["已完成單數", s["done"]], ["營業額（已完成）", s["revenue"]],
+                ["現金", s["cash"]], ["刷卡", s["card"]], ["已取消單數", s["cancelled"]]]:
+        ws.append(row)
+    for cell in ws["A"]:
+        cell.font = Font(bold=True)
+    for r in range(3, 6):
+        ws.cell(r, 2).number_format = "#,##0"
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 16
+
+    wd = wb.create_sheet("訂單明細")
+    wd.append(["單號", "時間", "姓名", "電話", "取餐方式", "地址", "付款方式", "狀態", "餐點", "備註", "金額"])
+    for o in orders:
+        items = "、".join(f'{i["item_name"]}×{i["qty"]}' for i in o["items"])
+        wd.append([safe(v) for v in [
+            o["order_id"], o["created_at"].strftime("%Y-%m-%d %H:%M"), o["customer_name"], o["phone"],
+            FUL_TEXT.get(o["fulfillment"], o["fulfillment"]), o["address"],
+            PAY_TEXT.get(o["payment"], o["payment"]), STATUS_TEXT.get(o["status"], o["status"]),
+            items, o["note"], o["total"]]])
+    for cell in wd[1]:
+        cell.font = Font(bold=True)
+    for col, w in zip("ABCDEFGHIJK", (10, 17, 12, 14, 10, 28, 10, 10, 40, 24, 10)):
+        wd.column_dimensions[col].width = w
+    for r in range(2, wd.max_row + 1):
+        wd.cell(r, 11).number_format = "#,##0"
+
+    wi = wb.create_sheet("餐點銷量")
+    wi.append(["品項", "數量", "金額"])
+    for i in s["items"]:
+        wi.append([safe(i["name"]), i["qty"], i["amount"]])
+    for cell in wi[1]:
+        cell.font = Font(bold=True)
+    wi.column_dimensions["A"].width = 18
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
 @app.get("/api/admin/orders")
 @admin_only
 def admin_orders():
-    status = request.args.get("status")
+    status = request.args.get("status", "active")
+    day = parse_date(request.args.get("date"))
     c = conn()
     try:
         with c.cursor() as cur:
-            if status in STATUSES:
-                cur.execute("SELECT * FROM orders WHERE status=%s ORDER BY id DESC LIMIT 100", (status,))
-            else:
-                cur.execute("SELECT * FROM orders ORDER BY id DESC LIMIT 100")
-            orders = cur.fetchall()
-            if orders:
-                ids = [o["order_id"] for o in orders]
-                cur.execute("SELECT * FROM order_items WHERE order_id IN (%s)"
-                            % ",".join(["%s"] * len(ids)), ids)
-                by = {}
-                for it in cur.fetchall():
-                    by.setdefault(it["order_id"], []).append(it)
-                for o in orders:
-                    o["items"] = by.get(o["order_id"], [])
-                    o["created_at"] = o["created_at"].strftime("%m/%d %H:%M")
+            orders = fetch_orders(cur, status, day)
     finally:
         c.close()
+    for o in orders:
+        o["created_at"] = o["created_at"].strftime("%m/%d %H:%M")
     return jsonify(orders)
+
+
+@app.get("/api/admin/summary")
+@admin_only
+def admin_summary():
+    day = parse_date(request.args.get("date"))
+    c = conn()
+    try:
+        with c.cursor() as cur:
+            result = day_summary(cur, day)
+    finally:
+        c.close()
+    return jsonify(result)
+
+
+@app.get("/admin/export.xlsx")
+@admin_only
+def admin_export():
+    day = parse_date(request.args.get("date"))
+    c = conn()
+    try:
+        with c.cursor() as cur:
+            orders = fetch_orders(cur, "all", day)
+            summary = day_summary(cur, day)
+    finally:
+        c.close()
+    return send_file(io.BytesIO(build_xlsx(day, orders, summary)), as_attachment=True,
+                     download_name=f"orders_{day}.xlsx",
+                     mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 
 @app.post("/api/admin/orders/<order_id>/status")
@@ -269,10 +407,12 @@ def admin_set_status(order_id):
     if status not in STATUSES:
         return jsonify(error="狀態不正確"), 400
     c = conn()
-    with c.cursor() as cur:
-        cur.execute("UPDATE orders SET status=%s WHERE order_id=%s", (status, order_id))
-    c.commit()
-    c.close()
+    try:
+        with c.cursor() as cur:
+            cur.execute("UPDATE orders SET status=%s WHERE order_id=%s", (status, order_id))
+        c.commit()
+    finally:
+        c.close()
     return jsonify(ok=True)
 
 

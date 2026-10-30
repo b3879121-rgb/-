@@ -7,13 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<div class="demo">展示版：不連接資料庫與 n8n，訂單只存在你的瀏覽器。<a href="admin.html">看展示版後台</a></div>
 <div class="awning-wrap"><div class="awning" aria-hidden="true"></div></div>
 <figure class="hero">
-  <img src="https://images.unsplash.com/photo-1535898331935-2d274aff0fbc?auto=format&fit=crop&w=1600&h=700&q=75" alt="下雨夜晚的台灣夜市，人們在攤位前吃飯">
+  <img src="{{ hero }}" alt="下雨夜晚的台灣夜市，人們在攤位前吃飯">
   <div class="sign">楓葉小吃</div>
 </figure>
 <p class="tagline">選好餐點，填寫資料，送出後店裡就會收到訂單。</p>
@@ -45,9 +44,17 @@
           <label for="address">外送地址</label>
           <input type="text" id="address" name="address" autocomplete="street-address">
         </div>
+        <fieldset>
+          <legend>付款方式</legend>
+          <div class="choice">
+            <label><input type="radio" name="payment" value="cash" checked> 現金</label>
+            <label><input type="radio" name="payment" value="card"> 刷卡</label>
+          </div>
+          <p class="hint">於取餐或送達時付款。選刷卡由店家以刷卡機收款，本網站不會收集卡號。</p>
+        </fieldset>
         <label for="note">備註（選填）</label>
         <textarea id="note" name="note" maxlength="200"></textarea>
-        <button class="submit" type="submit" id="submit">送出訂單</button>
+        <button class="submit" type="submit" id="submit">確認訂單</button>
         <p class="msg" id="msg" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -55,10 +62,23 @@
       <h2>訂單已送出</h2>
       <div class="id" id="done-id"></div>
       <p>合計 <strong id="done-total"></strong> 元。店家確認後會聯絡你。</p>
+      <p class="hint" id="done-pay"></p>
       <button type="button" id="again">再訂一筆</button>
     </div>
   </aside>
 </main>
+
+<dialog id="confirm" aria-labelledby="confirm-title">
+  <h2 id="confirm-title">確認訂單</h2>
+  <ul class="lines" id="c-lines"></ul>
+  <div class="total"><span>合計</span><span id="c-total"></span></div>
+  <dl class="c-info" id="c-info"></dl>
+  <p class="msg error" id="c-msg" role="alert"></p>
+  <div class="c-actions">
+    <button type="button" id="c-back">返回修改</button>
+    <button type="button" class="submit" id="c-ok">確認送出</button>
+  </div>
+</dialog>
 
 <div class="bar" id="bar">
   <span id="bar-sum">尚未選餐</span>
@@ -69,6 +89,6 @@
   照片來自 <a href="https://unsplash.com/?utm_source=maple_order&utm_medium=referral">Unsplash</a>：
   K X I T H V I S U A L S、Xavier Chng、Trista Le、Jonathan Lim、Daily Food Shot、Chinh Le Duc、Uehara Photography、Snappr、Moonyang Lin。
 </footer>
-<script src="app.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
